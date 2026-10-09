@@ -1,3 +1,5 @@
+using System;
+using System.Net.Http;
 using System.Text;
 using BTCPayServer.Abstractions.Contracts;
 using BTCPayServer.Abstractions.Models;
@@ -13,7 +15,7 @@ namespace BTCPayServer.Plugins.NIP05
     {
         public override IBTCPayServerPlugin.PluginDependency[] Dependencies { get; } =
         {
-            new() {Identifier = nameof(BTCPayServer), Condition = ">=2.4.1"}
+            new() {Identifier = nameof(BTCPayServer), Condition = ">=2.4.5"}
         };
 
         public override void Execute(IServiceCollection applicationBuilder)
@@ -24,6 +26,10 @@ namespace BTCPayServer.Plugins.NIP05
             applicationBuilder.AddSingleton<IPluginHookFilter, LnurlDescriptionFilter>();
             applicationBuilder.AddSingleton<IPluginHookFilter, LnurlFilter>();
             applicationBuilder.TryAddSingleton<NostrClientPool>();
+            applicationBuilder.AddSingleton<NwcRelayClientFactory>();
+            applicationBuilder.AddHttpClient("nwc.safe")
+                .UseSSRFProtection()
+                .ConfigurePrimaryHttpMessageHandler((h, _) => { ((SocketsHttpHandler)h).AllowAutoRedirect = false; });
             applicationBuilder.AddSingleton<Zapper>();
             applicationBuilder.AddHostedService(sp => sp.GetRequiredService<Zapper>());
             applicationBuilder.AddSingleton<NostrWalletConnectLightningConnectionStringHandler>();
