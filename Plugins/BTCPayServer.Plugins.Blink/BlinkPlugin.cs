@@ -1,4 +1,6 @@
 ﻿#nullable enable
+using System;
+using System.Net.Http;
 using BTCPayServer.Abstractions.Contracts;
 using BTCPayServer.Abstractions.Models;
 using BTCPayServer.Abstractions.Services;
@@ -18,6 +20,11 @@ namespace BTCPayServer.Plugins.Blink
 
         public override void Execute(IServiceCollection applicationBuilder)
         {
+            applicationBuilder.AddTransient<HttpsDestinationHandler>();
+            applicationBuilder.AddHttpClient("blink.safe", c => c.Timeout = TimeSpan.FromSeconds(30))
+                .AddHttpMessageHandler<HttpsDestinationHandler>()
+                .UseSSRFProtection()
+                .ConfigurePrimaryHttpMessageHandler((h, _) => { ((SocketsHttpHandler)h).AllowAutoRedirect = false; });
             applicationBuilder.AddUIExtension("ln-payment-method-setup-tab", "Blink/LNPaymentMethodSetupTab");
             applicationBuilder.AddSingleton<ILightningConnectionStringHandler>(provider => provider.GetRequiredService<BlinkLightningConnectionStringHandler>());
             applicationBuilder.AddSingleton<BlinkLightningConnectionStringHandler>();

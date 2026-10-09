@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable enable
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -27,7 +27,7 @@ public class NostrWalletConnectLightningClient : IExtendedLightningClient
 
 	public Uri? ServerUri => _serverUri;
 
-	private readonly NostrClientPool _nostrClientPool;
+	private readonly NwcRelayClientFactory _nostrClientPool;
     private readonly Uri _uri;
     private readonly Network _network;
     private readonly (ECXOnlyPubKey pubkey, ECPrivKey secret, Uri[] relays, string lud16) _connectParams;
@@ -35,7 +35,7 @@ public class NostrWalletConnectLightningClient : IExtendedLightningClient
 
 	private readonly ILogger<NostrWalletConnectLightningClient>? _logger;
 
-	public NostrWalletConnectLightningClient(NostrClientPool nostrClientPool, Uri uri, Network network,
+	public NostrWalletConnectLightningClient(NwcRelayClientFactory nostrClientPool, Uri uri, Network network,
         ILogger<NostrWalletConnectLightningClient>? logger = null)
     {
         _nostrClientPool = nostrClientPool;
@@ -66,7 +66,7 @@ public class NostrWalletConnectLightningClient : IExtendedLightningClient
             : NIP47.EncryptionScheme.Nip04;
         _encryptionScheme = scheme;
         _logger?.LogInformation("NWC: negotiated {Scheme} encryption with wallet service on {Relay} (advertised: {Advertised})",
-            scheme, _serverUri, info?.EncryptionSchemes is { Length: > 0 } s ? string.Join(" ", s) : "(no encryption tag)");
+            scheme, _serverUri.GetLeftPart(UriPartial.Authority), info?.EncryptionSchemes is { Length: > 0 } s ? string.Join(" ", s) : "(no encryption tag)");
         return scheme;
     }
 

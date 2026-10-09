@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable enable
 using System;
 using System.Linq;
 using System.Threading;
@@ -11,10 +11,10 @@ namespace BTCPayServer.Plugins.NIP05;
 
 public class NostrWalletConnectLightningConnectionStringHandler : ILightningConnectionStringHandler
 {
-    private readonly NostrClientPool _nostrClientPool;
+    private readonly NwcRelayClientFactory _nostrClientPool;
     private readonly Microsoft.Extensions.Logging.ILogger<NostrWalletConnectLightningClient> _logger;
 
-    public NostrWalletConnectLightningConnectionStringHandler(NostrClientPool nostrClientPool,
+    public NostrWalletConnectLightningConnectionStringHandler(NwcRelayClientFactory nostrClientPool,
         Microsoft.Extensions.Logging.ILogger<NostrWalletConnectLightningClient> logger)
     {
         _nostrClientPool = nostrClientPool;
@@ -37,12 +37,22 @@ public class NostrWalletConnectLightningConnectionStringHandler : ILightningConn
             return null;
         }
 
-        if (!Uri.TryCreate(connectionString, UriKind.Absolute, out var uri))
+        if (!Uri.TryCreate(connectionString, UriKind.Absolute, out var uri) ||
+            !string.IsNullOrEmpty(uri.UserInfo) || !string.IsNullOrEmpty(uri.Fragment) || !uri.IsDefaultPort ||
+            (uri.AbsolutePath != "" && uri.AbsolutePath != "/"))
         {
             error = "Invalid nostr wallet connect uri";
             return null;
         }
 
+        try {
+            var parsed = NIP47.ParseUri(uri);
+            if (parsed.relays.Length is < 1 or > 8) throw new FormatException();
+            foreach (var relay in parsed.relays) NwcRelayClientFactory.ValidateRelay(relay);
+        } catch {
+            error = "Invalid NWC keys or relay destinations";
+            return null;
+        }
         error = null;
 		return new NostrWalletConnectLightningClient(_nostrClientPool, uri, network, _logger);
 	}
