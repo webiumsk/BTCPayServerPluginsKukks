@@ -98,7 +98,7 @@ public class BlinkLightningConnectionStringHandler : ILightningConnectionStringH
 
         error = null;
 
-        var client = _httpClientFactory.CreateClient();
+        var client = _httpClientFactory.CreateClient("blink.safe");
 
         client.DefaultRequestHeaders.Add("X-Api-Key", apiKey);
 
@@ -158,8 +158,16 @@ public class BlinkLightningConnectionStringHandler : ILightningConnectionStringH
             }
         }
 
+        if (kv.TryGetValue("server", out var origin) &&
+            (!Uri.TryCreate(origin, UriKind.Absolute, out var supplied) ||
+             supplied != new Uri($"https://{atParts[1]}")))
+        {
+            error = "The server must be the HTTPS origin of the Lightning address";
+            return null;
+        }
+
         error = null;
-        var client = _httpClientFactory.CreateClient();
+        var client = _httpClientFactory.CreateClient("blink.safe");
         // Bound each LNURL/verify request rather than inheriting the default 100s HttpClient timeout,
         // so a degraded blink-lnurl-server cannot tie up a connection per poll for that long.
         client.Timeout = TimeSpan.FromSeconds(30);
