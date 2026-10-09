@@ -1,0 +1,16 @@
+@using BTCPayServer.Abstractions.Contracts
+@using BTCPayServer.Plugins.ServerMessage
+@inject ISettingsRepository SettingsRepository
+
+@{
+    var settings = await SettingsRepository.GetSettingAsync<ServerMessageSettings>();
+    if (settings is not { AdminEnabled: true } || string.IsNullOrWhiteSpace(settings.AdminMessage))
+    {
+        return;
+    }
+    var style = settings.AdminStyle ?? "info";
+}
+
+<div class="alert alert-@style text-center mb-0" role="alert" style="border-radius:0;">
+    @Safe.Raw(settings.AdminMessage)
+</div>

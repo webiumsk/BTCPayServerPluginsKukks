@@ -1,0 +1,25 @@
+@using BTCPayServer.Plugins.Electrum.Controllers
+<div id="electrum-sync-status">
+    <partial name="Electrum/_SyncStatusContent" />
+</div>
+
+<script>
+(function () {
+    var container = document.getElementById('electrum-sync-status');
+    if (!container) return;
+    var interval = setInterval(function () {
+        if (!document.getElementById('electrum-sync-status')) {
+            clearInterval(interval);
+            return;
+        }
+        fetch('@Url.Action("SyncStatus", "UIElectrum")')
+            .then(function (r) { return r.ok ? r.text() : null; })
+            .then(function (html) {
+                if (html && document.getElementById('electrum-sync-status')) {
+                    container.innerHTML = html;
+                }
+            })
+            .catch(function () {});
+    }, 10000);
+})();
+</script>

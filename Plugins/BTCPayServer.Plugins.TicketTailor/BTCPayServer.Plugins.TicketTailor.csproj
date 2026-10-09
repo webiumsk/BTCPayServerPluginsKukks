@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.Razor">
 
     <PropertyGroup>
-        <TargetFramework>net8.0</TargetFramework>
+        <TargetFramework>net10.0</TargetFramework>
         <LangVersion>12</LangVersion>
     </PropertyGroup>
 
@@ -9,7 +9,7 @@
     <PropertyGroup>
         <Product>TicketTailor</Product>
         <Description>Allows you to integrate with TicketTailor.com to sell tickets for Bitcoin</Description>
-        <Version>2.0.7</Version>
+        <Version>2.0.10</Version>
 <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
     </PropertyGroup>
     <!-- Plugin development properties -->

@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.Razor">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <LangVersion>12</LangVersion>
     <Nullable>enable</Nullable>
   </PropertyGroup>
@@ -9,7 +9,7 @@
   <PropertyGroup>
     <Product>MCP</Product>
     <Description>Exposes a Model Context Protocol (MCP) server, allowing LLM clients to interact with BTCPay Server through natural language.</Description>
-    <Version>1.0.0</Version>
+    <Version>1.1.1</Version>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
   </PropertyGroup>
 
@@ -33,7 +33,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="ModelContextProtocol.AspNetCore" Version="0.3.0-preview.4">
+    <PackageReference Include="ModelContextProtocol.AspNetCore" Version="1.1.0">
       <Private>true</Private>
     </PackageReference>
   </ItemGroup>

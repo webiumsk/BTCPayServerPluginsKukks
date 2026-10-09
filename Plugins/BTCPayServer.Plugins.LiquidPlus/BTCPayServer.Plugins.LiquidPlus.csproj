@@ -1,7 +1,7 @@
   <Project Sdk="Microsoft.NET.Sdk.Razor">
 
     <PropertyGroup>
-      <TargetFramework>net8.0</TargetFramework>
+      <TargetFramework>net10.0</TargetFramework>
       <LangVersion>10</LangVersion>
       <Configurations>Debug;Release;Altcoins-Debug;Altcoins-Release</Configurations>
       <Platforms>AnyCPU</Platforms>
@@ -12,7 +12,7 @@
     <PropertyGroup>
       <Product>Liquid+</Product>
       <Description>Enhanced support for the liquid network.</Description>
-      <Version>1.1.6</Version>
+      <Version>1.1.7</Version>
 <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
     </PropertyGroup>
 
